@@ -1,0 +1,29 @@
+name: Build and Release
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build KKReshade
+        run: msbuild KKReshade.sln /p:Configuration=Release /p:Platform=x64
+
+      - name: Upload KKReshade.addon
+        uses: actions/upload-artifact@v4
+        with:
+          name: KKReshade-DLSS5
+          path: output/x64/Release/KKReshade.addon
